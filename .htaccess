@@ -1,0 +1,29 @@
+# DO NOT REMOVE - cPanel Passenger Node.js Configuration
+DirectoryIndex disabled
+PassengerEnabled on
+PassengerAppEnv production
+PassengerAppRoot "/home/username/investment-tracker"
+PassengerBaseURI "/"
+PassengerAppType node
+PassengerStartupFile app.js
+
+# ----------------------------------------------------------------------
+# Database File Protection (Prevent Direct HTTP Access to SQLite DB)
+# ----------------------------------------------------------------------
+<FilesMatch "\.(sqlite|sqlite3|db|json|env|log)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# ----------------------------------------------------------------------
+# Security Headers & Gzip Compression
+# ----------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+</IfModule>
