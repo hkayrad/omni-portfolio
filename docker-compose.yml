@@ -1,5 +1,6 @@
 services:
   portfolio-tracker:
+    image: omni-portfolio-tracker:latest
     build:
       context: .
       dockerfile: Dockerfile

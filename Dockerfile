@@ -1,38 +1,36 @@
-# Multi-stage Dockerfile for OmniPortfolio Tracker
+# Multi-stage Dockerfile for OmniPortfolio Tracker with Maximum Layer Caching
 
-# --- STAGE 1: Build Stage ---
-FROM node:20-alpine AS builder
-
+# --- STAGE 1: Dependency Layer Caching ---
+FROM node:20-alpine AS deps
 WORKDIR /app
-
-# Copy package descriptors
 COPY package*.json ./
-
-# Install all dependencies (including devDependencies for build)
+# Cache npm ci layer by package.json hash to avoid re-downloading dependencies
 RUN npm ci
 
-# Copy source code and configuration files
+# --- STAGE 2: Build Stage ---
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
 # Build Vite client SPA & Express TypeScript server
 RUN npm run build
 
-# --- STAGE 2: Production Stage ---
+# --- STAGE 3: Production Runner ---
 FROM node:20-alpine AS runner
-
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=32000
 
-# Copy package descriptors & install production dependencies only
+# Install production dependencies only
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci --only=production && npm cache clean --force
 
-# Copy compiled build artifacts from builder stage
+# Copy pre-compiled build artifacts from builder stage
 COPY --from=builder /app/dist ./dist
 
-# Create database folder for persistence
+# Create database folder for host volume persistence
 RUN mkdir -p /app/db && chown -R node:node /app
 
 USER node
