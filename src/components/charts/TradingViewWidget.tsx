@@ -11,9 +11,41 @@ declare global {
   }
 }
 
+/**
+ * Safely format symbols for TradingView Widget
+ */
+const getValidTradingViewSymbol = (rawSymbol: string): string => {
+  if (!rawSymbol) return 'BIST:XU100';
+  const sym = rawSymbol.trim().toUpperCase();
+
+  // If symbol already includes exchange prefix (e.g. BIST:THYAO, BINANCE:BTCTRY)
+  if (sym.includes(':')) return sym;
+
+  // TEFAS Mutual Funds do not exist on TradingView -> fallback to BIST 100 index chart
+  const knownTefasFunds = ['TCD', 'AFA', 'NNF', 'IPB', 'MAC', 'TI1', 'TTA', 'FON', 'PHE', 'PBR', 'CPT'];
+  if (knownTefasFunds.includes(sym)) {
+    return 'BIST:XU100';
+  }
+
+  // Forex & Metals
+  if (sym === 'USD' || sym === 'USDTRY') return 'FX:USDTRY';
+  if (sym === 'EUR' || sym === 'EURTRY') return 'FX:EURTRY';
+  if (sym === 'GLD' || sym === 'XAU') return 'OANDA:XAUUSD';
+
+  // Major Crypto pairs
+  if (['BTC', 'ETH', 'SOL', 'XRP', 'AVAX', 'USDT'].includes(sym)) {
+    return `BINANCE:${sym}TRY`;
+  }
+
+  // Default BIST stock prefix
+  return `BIST:${sym}`;
+};
+
 export const TradingViewWidget: React.FC<TradingViewProps> = ({ symbol = 'BIST:XU100' }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
+
+  const formattedSymbol = getValidTradingViewSymbol(symbol);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -33,7 +65,7 @@ export const TradingViewWidget: React.FC<TradingViewProps> = ({ symbol = 'BIST:X
       if (window.TradingView) {
         new window.TradingView.widget({
           autosize: true,
-          symbol: symbol,
+          symbol: formattedSymbol,
           interval: 'D',
           timezone: 'Europe/Istanbul',
           theme: theme === 'dark' ? 'dark' : 'light',
@@ -47,7 +79,7 @@ export const TradingViewWidget: React.FC<TradingViewProps> = ({ symbol = 'BIST:X
       }
     };
     containerRef.current.appendChild(script);
-  }, [symbol, theme]);
+  }, [formattedSymbol, theme]);
 
   return (
     <div className="w-full h-[400px] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
