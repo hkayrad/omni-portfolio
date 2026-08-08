@@ -5,8 +5,13 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbDir = path.resolve(__dirname, '../../db');
-const dbFilePath = path.join(dbDir, 'portfolio.json');
+// Determine database path supporting environment variables for Docker volume mounts
+const envDbPath = process.env.DB_FILE_PATH;
+const dbFilePath = envDbPath
+  ? path.resolve(envDbPath.endsWith('.sqlite') ? envDbPath.replace('.sqlite', '.json') : envDbPath)
+  : path.join(path.resolve(__dirname, '../../db'), 'portfolio.json');
+
+const dbDir = path.dirname(dbFilePath);
 
 export interface UserRecord {
   id: string;
@@ -42,30 +47,35 @@ class FileDatabase {
   }
 
   private init() {
-    if (!fs.existsSync(dbDir)) {
-      fs.mkdirSync(dbDir, { recursive: true });
-    }
+    try {
+      if (!fs.existsSync(dbDir)) {
+        fs.mkdirSync(dbDir, { recursive: true });
+      }
 
-    if (fs.existsSync(dbFilePath)) {
-      try {
+      if (fs.existsSync(dbFilePath)) {
         const fileContent = fs.readFileSync(dbFilePath, 'utf-8');
-        this.data = JSON.parse(fileContent);
-        if (!this.data.users) this.data.users = [];
-        if (!this.data.holdings) this.data.holdings = [];
-      } catch (err) {
-        console.error('Failed to parse db file, initializing fresh database:', err);
+        const parsed = JSON.parse(fileContent);
+        this.data = {
+          users: Array.isArray(parsed.users) ? parsed.users : [],
+          holdings: Array.isArray(parsed.holdings) ? parsed.holdings : [],
+        };
+      } else {
         this.save();
       }
-    } else {
-      this.save();
+    } catch (err) {
+      console.error(`Database Init Error for ${dbFilePath}:`, err);
+      this.data = { users: [], holdings: [] };
     }
   }
 
   private save() {
     try {
+      if (!fs.existsSync(dbDir)) {
+        fs.mkdirSync(dbDir, { recursive: true });
+      }
       fs.writeFileSync(dbFilePath, JSON.stringify(this.data, null, 2), 'utf-8');
     } catch (err) {
-      console.error('Failed to save to db file:', err);
+      console.error(`Database Save Error for ${dbFilePath}:`, err);
     }
   }
 
