@@ -1,3 +1,12 @@
+# ⚠️ DISCLAIMER: THIS APP WAS 100% VIBE CODED ⚠️
+
+> [!WARNING]
+> ### **✨ NOTICE: THIS APPLICATION WAS ENTIRELY VIBE CODED ✨**
+> Built with raw vibes, high-octane iteration, and AI pair-programming magic. 
+> Expect slick dark mode aesthetics, zero-lag metrics, and immaculate main-character portfolio tracking energy. Proceed with good vibes only! 🚀📈
+
+---
+
 # 📈 Multi-Asset Investment Portfolio Tracker
 
 A unified, responsive, privacy-focused personal investment dashboard designed to track **BIST (Borsa İstanbul)**, **Crypto**, **TEFAS Mutual Funds**, **Gold**, and **Fiat currencies** in a single user interface. Integrates automated API sync for supported crypto exchanges (**Binance TR**, **Bybit**) and manual Stock/Asset ID entry with automated price fetching for non-API brokers and banks (**İş Bankası**, **Midas**).
