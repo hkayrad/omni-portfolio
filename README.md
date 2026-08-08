@@ -69,7 +69,7 @@ You can easily deploy and host OmniPortfolio on your **Home Server** (NAS, Raspb
    Open `http://<your-home-server-ip>:3000` in your browser.
 
 ### Docker Persistent Volume Architecture
-The `docker-compose.yml` mounts `./db:/app/db` to persist your SQLite database file (`portfolio.sqlite`) on your host storage:
+The `docker-compose.yaml` mounts `./db:/app/db` to persist your SQLite database file (`portfolio.sqlite`) on your host storage:
 
 ```yaml
 services:
