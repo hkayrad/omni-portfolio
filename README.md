@@ -1,9 +1,9 @@
 # ⚠️ DISCLAIMER: THIS APP WAS 100% VIBE CODED ⚠️
 
 > [!WARNING]
-> ### **✨ NOTICE: THIS APPLICATION WAS ENTIRELY VIBE CODED ✨**
-> Built with raw vibes, high-octane iteration, and AI pair-programming magic. 
-> Expect slick dark mode aesthetics, zero-lag metrics, and immaculate main-character portfolio tracking energy. Proceed with good vibes only! 🚀📈
+> ### ** NOTICE: THIS APPLICATION WAS ENTIRELY VIBE CODED **
+> It has been build in my own free time and the purpose is to practice my promting skills.
+> Also I wanted an app to see all of my investments in one space.
 
 ---
 
