@@ -11,7 +11,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=32000
-      - DB_FILE_PATH=/app/db/portfolio.sqlite
+      - DB_FILE_PATH=/app/db/portfolio.json
     env_file:
       - .env
     volumes:
