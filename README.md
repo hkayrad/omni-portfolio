@@ -2,7 +2,7 @@
 
 > [!WARNING]
 > ### ** NOTICE: THIS APPLICATION WAS ENTIRELY VIBE CODED **
-> It has been build in my own free time and the purpose is to practice my promting skills.
+> It has been built in my own free time and the purpose is to practice my prompting skills.
 > Also I wanted an app to see all of my investments in one space.
 
 ---
